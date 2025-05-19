@@ -1,0 +1,4 @@
+com\strathmore\lostandfound\repository\LostFoundItemRepository.class
+com\strathmore\lostandfound\service\LostFoundItemService.class
+com\strathmore\lostandfound\LostAndFoundApplication.class
+com\strathmore\lostandfound\model\LostFoundItem.class
