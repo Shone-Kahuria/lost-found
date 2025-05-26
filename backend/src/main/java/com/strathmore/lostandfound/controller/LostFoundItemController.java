@@ -3,6 +3,9 @@ package com.strathmore.lostandfound.controller;
 import com.strathmore.lostandfound.model.LostFoundItem;
 import com.strathmore.lostandfound.service.LostFoundItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +21,10 @@ public class LostFoundItemController {
     private LostFoundItemService service;
 
     @GetMapping
-    public List<LostFoundItem> getAllItems() {
-        return service.getAllItems();
+    public Page<LostFoundItem> getAllItems(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return service.getAllItems(pageable);
     }
 
     @GetMapping("/{id}")
@@ -68,7 +73,10 @@ public class LostFoundItemController {
     }
 
     @GetMapping("/search")
-    public List<LostFoundItem> searchItems(@RequestParam String keyword) {
-        return service.searchItems(keyword);
+    public Page<LostFoundItem> searchItems(@RequestParam String keyword,
+                                           @RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return service.searchItems(keyword, pageable);
     }
 }

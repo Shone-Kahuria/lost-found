@@ -32,4 +32,60 @@ public class LostFoundItem {
     private String contactInfo;
 
     private String status; // "lost" or "found"
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public LocalDate getDateLostFound() {
+        return dateLostFound;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setDateLostFound(LocalDate dateLostFound) {
+        this.dateLostFound = dateLostFound;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
