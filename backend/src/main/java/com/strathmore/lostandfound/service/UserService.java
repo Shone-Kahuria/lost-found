@@ -3,14 +3,17 @@ package com.strathmore.lostandfound.service;
 import com.strathmore.lostandfound.model.User;
 import com.strathmore.lostandfound.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -26,23 +29,12 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email is already in use");
         }
-        // Create new User instance and set fields via reflection due to missing setters
+
         User newUser = new User();
-        try {
-            Field usernameField = User.class.getDeclaredField("username");
-            usernameField.setAccessible(true);
-            usernameField.set(newUser, user.getUsername());
+        newUser.setUsername(user.getUsername());
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
-            Field emailField = User.class.getDeclaredField("email");
-            emailField.setAccessible(true);
-            emailField.set(newUser, user.getEmail());
-
-            Field passwordField = User.class.getDeclaredField("password");
-            passwordField.setAccessible(true);
-            passwordField.set(newUser, passwordEncoder.encode(user.getPassword()));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to set user fields", e);
-        }
         return userRepository.save(newUser);
     }
 
@@ -61,5 +53,17 @@ public class UserService {
             throw new IllegalArgumentException("Password cannot be empty");
         }
         // Add more validations as needed
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        return new org.springframework.security.core.userdetails.User(
+            user.getUsername(),
+            user.getPassword(),
+            Collections.emptyList() // Add roles/authorities if applicable
+        );
     }
 }
